@@ -20,7 +20,7 @@ from src.data import (
     create_dataloaders,
     cleanup_llm
 )
-from src.model import RobustProbe
+from src.model import HybridProbe 
 from src.trainer import Trainer
 from src.utils import set_seed, check_environment
 
@@ -94,7 +94,7 @@ def main():
     print(f"✅ Val: {len(val_dataset)} samples, {len(val_loader)} batches")
     
     # Создание модели
-    probe = RobustProbe(
+    probe = HybridProbe(
         hidden_dim=hidden_dim,
         num_extra_layers=len(config.extra_layers),
         num_heads=config.num_heads,

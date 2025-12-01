@@ -7,7 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class RobustProbe(nn.Module):
+class HybridProbe(nn.Module):
     """
     Probe с Transformer encoder и multi-layer fusion.
     

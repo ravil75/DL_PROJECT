@@ -15,7 +15,7 @@ from .utils import set_seed, check_environment, mixup_data
 
 __version__ = "1.0.0"
 __all__ = [
-    "RobustProbe",
+    "HybridProbe",
     "load_data",
     "load_model_and_tokenizer",
     "extract_hybrid_data", 
