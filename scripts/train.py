@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Скрипт обучения QNLI Probe
 """
