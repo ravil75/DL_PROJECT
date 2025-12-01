@@ -95,18 +95,15 @@ pip install -r requirements.txt
 python scripts/train.py
 ```
 
-## 📈 Визуализации
+## Визуализации
 
-<div style="
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: center;
-">
-  <img src="results/best_model/figures/training_curves.png" style="width: 45%; min-width: 300px;">
-  <img src="results/best_model/figures/confusion_matrix.png" style="width: 45%; min-width: 300px;">
-  <img src="results/best_model/figures/confidence_analysis.png" style="width: 45%; min-width: 300px;">
-</div>
+| Training Curves | Confusion Matrix |
+|:---------------:|:----------------:|
+| ![Training](results/best_model/figures/training_curves.png) | ![Confusion](results/best_model/figures/confusion_matrix.png) |
+
+| Confidence Analysis |
+|:-------------------:|
+| ![Confidence](results/best_model/figures/confidence_analysis.png) |
 
 ## Основные выводы
 1. Hidden states > Generation: Probe на скрытых состояниях даёт +33% accuracy
