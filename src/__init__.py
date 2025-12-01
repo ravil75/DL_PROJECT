@@ -1,20 +1,33 @@
 from .model import RobustProbe
-from .data import load_data, extract_hybrid_data, HybridDataset, collate_hybrid
+from .data import (
+    load_data,
+    load_model_and_tokenizer,
+    extract_hybrid_data,
+    HybridDataset,
+    collate_hybrid,
+    create_dataloaders,
+    cleanup_llm,
+    format_input
+)
 from .trainer import Trainer
 from .losses import LabelSmoothingLoss, compute_kl_loss
-from .utils import set_seed, format_input, mixup_data
+from .utils import set_seed, check_environment, mixup_data
 
 __version__ = "1.0.0"
 __all__ = [
     "RobustProbe",
     "load_data",
+    "load_model_and_tokenizer",
     "extract_hybrid_data", 
     "HybridDataset",
     "collate_hybrid",
+    "create_dataloaders",
+    "cleanup_llm",
+    "format_input",
     "Trainer",
     "LabelSmoothingLoss",
     "compute_kl_loss",
     "set_seed",
-    "format_input",
+    "check_environment",
     "mixup_data",
 ]
