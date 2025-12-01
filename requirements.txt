@@ -1,9 +1,9 @@
-torch==2.9.0
-transformers==4.57.3
-datasets==4.0.0
-scikit-learn==1.6.1
-numpy==2.0.2
-matplotlib==3.10.0
-seaborn==0.13.2
-tqdm==4.67.1
+torch
+transformers
+datasets
+scikit-learn
+numpy
+matplotlib
+seaborn
+tqdm
 protobuf==3.20.*
