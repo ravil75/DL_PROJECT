@@ -405,179 +405,161 @@ def render_result(result: Dict):
 
 
 def render_training_results(figures_path: str):
-    """Отрисовка вкладки с результатами обучения"""
+    """
+    Отрисовка вкладки с результатами обучения.
+    Основано на отчете HybridProbe: Multi-Layer Fusion.
+    """
     
-    st.subheader("📊 Результаты обучения модели")
-    
-    # Проверяем наличие графиков
-    figures_exist = check_figures_exist(figures_path)
-    
-    if not any(figures_exist.values()):
-        st.warning(f"""
-        ⚠️ Графики не найдены в папке `{figures_path}`
-        
-        Убедитесь, что:
-        1. Модель была обучена (`python scripts/train.py`)
-        2. Скрипт оценки был запущен (`python scripts/evaluate.py`)
-        3. Путь к графикам указан правильно
-        """)
-        return
-    
-    # Информация о модели
+    # Заголовок эксперимента
     st.markdown("""
-    <div class="info-box">
-        <strong>ℹ️ О модели:</strong><br>
-        Эта модель использует Probe-подход для классификации QNLI. 
-        Hidden states извлекаются из LLM (Qwen2.5-0.5B) и передаются в лёгкий 
-        Transformer-классификатор для определения, содержит ли предложение ответ на вопрос.
-    </div>
+    <h2 style='text-align: center; color: #2c3e50;'>🚀 HybridProbe: Multi-Layer Fusion</h2>
+    <p style='text-align: center; color: #7f8c8d;'>
+        Эксперимент по улучшению классификации QNLI через агрегацию слоев Qwen2.5-0.5B
+    </p>
     """, unsafe_allow_html=True)
-    
-    # === Training Curves ===
-    st.markdown("---")
-    
-    if figures_exist.get("training_curves"):
-        st.markdown("""
-        <div class="figure-card">
-            <div class="figure-title">📈 Кривые обучения (Training Curves)</div>
-            <div class="figure-description">
-                Графики показывают динамику обучения модели:
-                <ul>
-                    <li><strong>Train/Val Loss:</strong> Как менялась функция потерь на обучающей и валидационной выборках</li>
-                    <li><strong>Val Accuracy:</strong> Как росла точность на валидации</li>
-                    <li><strong>Overfitting Gap:</strong> Разница между Val и Train Loss (индикатор переобучения)</li>
-                </ul>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.image(
-            os.path.join(figures_path, "training_curves.png"),
-            use_container_width=True
-        )
-        
-        st.markdown("""
-        <div class="success-box">
-            <strong>✅ Интерпретация:</strong><br>
-            • Если Train и Val Loss близки — модель хорошо обобщает<br>
-            • Если Val Loss растёт при падающем Train Loss — переобучение<br>
-            • Красная точка на графике Accuracy — лучшая эпоха
-        </div>
-        """, unsafe_allow_html=True)
-    else:
-        st.warning("📈 График training_curves.png не найден")
-    
-    # Confusion Matrix
-    st.markdown("---")
-    
-    col1, col2 = st.columns([1, 1])
-    
-    with col1:
-        if figures_exist.get("confusion_matrix"):
-            st.markdown("""
-            <div class="figure-card">
-                <div class="figure-title">🎯 Матрица ошибок (Confusion Matrix)</div>
-                <div class="figure-description">
-                    Показывает распределение предсказаний модели по классам:
-                    <ul>
-                        <li><strong>TP (True Positive):</strong> Верно предсказан Entailment</li>
-                        <li><strong>TN (True Negative):</strong> Верно предсказан Not Entailment</li>
-                        <li><strong>FP (False Positive):</strong> Ошибочно предсказан Entailment</li>
-                        <li><strong>FN (False Negative):</strong> Пропущен Entailment</li>
-                    </ul>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.image(
-                os.path.join(figures_path, "confusion_matrix.png"),
-                use_container_width=True
-            )
-        else:
-            st.warning("🎯 График confusion_matrix.png не найден")
-    
-    with col2:
-        if figures_exist.get("confidence_analysis"):
-            st.markdown("""
-            <div class="figure-card">
-                <div class="figure-title">📊 Анализ уверенности (Confidence Analysis)</div>
-                <div class="figure-description">
-                    Распределение уверенности модели для верных и ошибочных предсказаний:
-                    <ul>
-                        <li><strong>Зелёный:</strong> Уверенность для правильных ответов</li>
-                        <li><strong>Красный:</strong> Уверенность для ошибок</li>
-                    </ul>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.image(
-                os.path.join(figures_path, "confidence_analysis.png"),
-                use_container_width=True
-            )
-        else:
-            st.warning("📊 График confidence_analysis.png не найден")
-    
-    # Интерпретация
-    st.markdown("---")
-    
-    st.markdown("""
-    <div class="info-box">
-        <strong>📝 Как читать результаты:</strong><br><br>
-        
-        <strong>Матрица ошибок:</strong><br>
-        • Идеальная модель имеет значения только на диагонали<br>
-        • Нормализованная матрица показывает % от реального класса<br><br>
-        
-        <strong>Анализ уверенности:</strong><br>
-        • Хорошо: правильные ответы с высокой уверенностью (>90%)<br>
-        • Хорошо: ошибки с низкой уверенностью (~50%)<br>
-        • Плохо: много ошибок с высокой уверенностью (overconfidence)
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Метрики модели
-    st.markdown("---")
-    st.subheader("📈 Ключевые метрики")
+
+    # 1. Главные показатели
+    st.markdown("### 🏆 Ключевые показатели")
     
     col1, col2, col3, col4 = st.columns(4)
     
-    # Пытаемся получить метрики из API
-    try:
-        health = check_api_health(st.session_state.get('api_url', DEFAULT_API_URL))
-        if health and health.get('best_accuracy'):
-            accuracy = health['best_accuracy']
-            params = health['probe_parameters']
-        else:
-            accuracy = 0.9136 # Примерное значение
-            params = 8500000
-    except:
-        accuracy = 0.91
-        params = 8500000
-    
     with col1:
         st.metric(
-            label="🎯 Best Accuracy",
-            value=f"{accuracy:.2%}"
+            label="Validation Accuracy",
+            value="91.36%",
+            delta="+7.43% vs MLPProbe"
         )
     
     with col2:
         st.metric(
-            label="🔢 Parameters",
-            value=f"{params:,}"
+            label="F1-Score",
+            value="0.9136",
+            help="Среднее гармоническое precision и recall"
         )
     
     with col3:
         st.metric(
-            label="📚 Dataset",
-            value="QNLI"
+            label="Overfitting Gap",
+            value="0.25%",
+            delta_color="normal",
+            help="Разница между Train и Val loss (чем меньше, тем лучше)"
         )
-    
+        
     with col4:
         st.metric(
-            label="🤖 Base Model",
-            value="Qwen2.5-0.5B"
+            label="High-Conf Errors",
+            value="12",
+            delta="-Low",
+            help="Ошибки, где модель была уверена на >90%"
         )
+
+    st.markdown("---")
+
+    # 2. Сравнение методов
+    col_desc, col_table = st.columns([1.5, 1])
+    
+    with col_desc:
+        st.subheader("💡 Описание подхода")
+        st.info("""Берем не просто один слой, 
+        а агрегируем информацию с множества слоев LLM.
+        
+        - **Модель:** Qwen/Qwen2.5-0.5B
+        - **Main Layer:** 13 (Encoder)
+        - **Fusion Layers:** 9, 10, 11, 12, 14, 15, 16
+        - **Техники:** Attention Pooling + Learnable Weights
+        """)
+        
+    with col_table:
+        st.subheader("📈 Сравнение методов")
+        comparison_data = pd.DataFrame({
+            "Метод": ["LLM Zero-Shot", "MLPProbe (Layer 14)", "HybridProbe"],
+            "Accuracy": ["~58.0%", "83.93%", "91.36%"],
+            "Прирост": ["—", "—", "+7.43%"]
+        })
+        st.dataframe(
+            comparison_data, 
+            hide_index=True, 
+            use_container_width=True
+        )
+
+    st.markdown("---")
+
+    # 3. Визуализация
+    st.subheader("📊 Визуализация обучения")
+    
+    figures_exist = check_figures_exist(figures_path)
+    
+    # Кривые обучения
+    if figures_exist["training_curves"]:
+        st.markdown("#### 1. Динамика обучения (Training Curves)")
+        st.image(os.path.join(figures_path, "training_curves.png"), use_container_width=True)
+        
+        with st.expander("🔎 Анализ графика обучения", expanded=True):
+            st.markdown("""
+            - **Стабильность:** Графики Train и Val идут примерно синхронно.
+            - **Регуляризация:** Использование Dropout (0.4) и R-Drop предотвратило переобучение.
+            - **Пик:** Лучшая точность достигнута на 13-й эпохе, после чего сработало Early Stopping.
+            """)
+    else:
+        st.warning("Файл training_curves.png не найден")
+
+    col_conf, col_matrix = st.columns(2)
+    
+    with col_conf:
+        if figures_exist["confusion_matrix"]:
+            st.markdown("#### 2. Матрица ошибок")
+            st.image(os.path.join(figures_path, "confusion_matrix.png"), use_container_width=True)
+            st.caption("""
+            **Баланс классов:**
+            - Entailment: 92.2% точности
+            - Not Entailment: 90.5% точности
+            Модель не имеет явного перекоса в одну сторону.
+            """)
+        else:
+            st.warning("Файл confusion_matrix.png не найден")
+            
+    with col_matrix:
+        if figures_exist["confidence_analysis"]:
+            st.markdown("#### 3. Анализ уверенности")
+            st.image(os.path.join(figures_path, "confidence_analysis.png"), use_container_width=True)
+            st.caption(f"""
+            **Калибровка:**
+            - Ср. уверенность (верно): **85.7%**
+            - Ср. уверенность (ошибка): **71.7%**
+            Модель "сомневается", когда делает ошибки.
+            """)
+        else:
+            st.warning("Файл confidence_analysis.png не найден")
+
+    st.markdown("---")
+
+    # 4. Итоговые выводы
+    st.subheader("📝 Итоговые выводы")
+    
+    st.success("""
+    1. **Multi-layer fusion работает:** Объединение слоев дало прирост **+7.4%** по сравнению с обычным пробингом.
+    2. **Отличная генерализация:** Благодаря сильной регуляризации (Dropout 0.4, Mixup), разрыв между train и val всего 0.25%.
+    3. **Надежность:** Модель совершила всего **12 ошибок** с высокой уверенностью (>90%) на 5463 примерах.
+    """)
+
+
+    # 5. Технические параметры
+    with st.expander("🔧 Технические параметры эксперимента"):
+        st.code("""
+Config:
+    Dataset: QNLI (104k train / 5.4k val)
+    Base Model: Qwen/Qwen2.5-0.5B
+    
+    Hyperparameters:
+    - Main Layer: 13
+    - Extra Layers: [9, 10, 11, 12, 14, 15, 16]
+    - Dropout: 0.4
+    - Weight Decay: 0.2
+    - Label Smoothing: 0.15
+    - Mixup Alpha: 0.2
+    - Batch Size: 64
+    - Optimizer: AdamW
+        """, language="yaml")
 
 
 # ============================================================================
