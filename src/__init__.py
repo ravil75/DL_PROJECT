@@ -1,4 +1,4 @@
-from .model import RobustProbe
+from .model import HybridProbe
 from .data import (
     load_data,
     load_model_and_tokenizer,
