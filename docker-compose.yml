@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: qnli-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./outputs:/app/outputs:ro
+      - ./results:/app/results:ro
+    restart: unless-stopped
+
+  streamlit:
+    build: .
+    container_name: qnli-streamlit
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./results:/app/results:ro
+    environment:
+      - API_URL=http://api:8000
+    command: streamlit run demo/streamlit_app.py --server.port 8501 --server.address 0.0.0.0 --server.headless true
+    depends_on:
+      - api
+    restart: unless-stopped

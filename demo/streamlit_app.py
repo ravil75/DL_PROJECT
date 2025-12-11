@@ -17,7 +17,7 @@ import os
 from typing import Optional, Dict, List
 
 # URL API сервера
-DEFAULT_API_URL = "http://localhost:8000"
+DEFAULT_API_URL = os.getenv("API_URL", "http://localhost:8000")
 
 # Путь к графикам (относительно корня проекта)
 FIGURES_PATH = "results/best_model/figures"
