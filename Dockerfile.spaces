@@ -1,4 +1,4 @@
-# чтобы локально развернуть контейнер
+# чтобы развернуть на HF Spaces
 
 FROM python:3.10-slim
 
@@ -17,9 +17,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY config.py .
 COPY src/ src/
 COPY demo/ demo/
+COPY outputs/ outputs/
+COPY results/ results/
+COPY start.sh .
 
-RUN mkdir -p outputs results/best_model/figures
+RUN chmod +x start.sh
 
-EXPOSE 8000 8501
+EXPOSE 7860
 
-CMD ["uvicorn", "demo.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["./start.sh"]

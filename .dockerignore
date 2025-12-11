@@ -10,9 +10,5 @@ venv
 tests/
 scripts/train.py
 scripts/evaluate.py
-outputs/
-results/
-*.pt
 .cache
-Dockerfile
 docker-compose.yml
