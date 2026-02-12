@@ -2,13 +2,13 @@
 
 Исследование эффективности probe-классификаторов на внутренних представлениях языковой модели Qwen2.5-0.5B для задачи QNLI.
 
-## 🤗 Демо
+##  Демо
 
 **Попробовать модель онлайн:** [https://garvil-qnli-classifier.hf.space](https://garvil-qnli-classifier.hf.space)
 
 [![Demo](https://img.shields.io/badge/🤗%20Hugging%20Face-Demo-blue)](https://garvil-qnli-classifier.hf.space)
 
-## 🎯 Цель проекта
+##  Цель проекта
 
 Показать, что **обучение на hidden states** LLM значительно превосходит zero-shot генерацию для специализированных задач понимания языка.
 
@@ -32,7 +32,7 @@
 
 **Улучшение**: +33.44% по сравнению с zero-shot 🚀
 
-## 🏗️ Архитектура решения
+##  Архитектура решения
 
                                 Qwen2.5-0.5B (frozen)
                                           |
@@ -145,3 +145,4 @@ python scripts/train.py
 | Dropout       | 0.4                           |
 | Learning rate | 5e-5                          |
 | Batch size    | 64                            |
+
